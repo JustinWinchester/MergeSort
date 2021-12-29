@@ -1,0 +1,115 @@
+1.	Merge sort is also a divide_conquer sorting 	algorithm. How it works:
+(1)	Use the mid index to divide the list to two equel size 
+	mid = (first +last) /2;
+(2)	merge_sort the left half
+(3)	merge sort the right half
+(3)	merge the left half and right half together to have a 	sorted list.
+
+2. 	Algorithm
+
+void merge_sort(int list[], int begin, int end)
+{
+	if( begin <= end)
+	{
+		int mid = (begin + end)/2;
+		merge_sort(list, begin, mid);//merge sort left half
+		merge_sort(list, mid+1, end);//merge sort right half
+		merge(list, begin, end);
+		//merge the left half and right half
+	}
+}
+
+for example, assume that we have the following list:
+
+
+12 3 -2 9 5 27 12 7
+12 3 -2 9   5 27 12 7
+12 3  -2 9  5 27  12 7
+12  3 -2  9  5  27 12 7  divide the list until sublist size = 1
+3 12 -2 9  5 27 7 12		Start merging
+-2 3 9 12 5 7 12 27
+-2 3 5 7 9 12 27
+sorted
+
+3. 	Algorithm Analysis:
+
+	Complexity of the merge sort is the same with the quick sort sort in the best case because the mid cuts the list into two equel size sublists each every time.
+
+complexity = O(nlog2 n)
+You may try to prove it.
+
+But you you may see the merge sort is NOT a "in_place" sorting algorithm because it needs an extra set of memory locations to store temporary list.  For this reason the merge sort is NOT a popular sorting algorithm in our practice.
+
+4. 	Code please type it and run it. Have fun!
+
+#include <iostream>
+#include <cmath>
+#include <cstdlib>
+using namespace std;
+
+const int INPUT_SIZE = 100;
+
+// A simple print function
+void print(int *input)
+{
+    for ( int i = 0; i < INPUT_SIZE; i++ )
+        cout << input[i] << " ";
+    cout << endl;
+}
+
+void merge(int* input, int p, int r)
+{
+    int mid = floor((p + r) / 2);
+    int i1 = 0;
+    int i2 = p;
+    int i3 = mid + 1;
+
+    // Temp array
+    int temp[r-p+1];
+
+    // Merge in sorted form the 2 arrays
+    while ( i2 <= mid && i3 <= r )
+        if ( input[i2] < input[i3] )
+            temp[i1++] = input[i2++];
+        else
+            temp[i1++] = input[i3++];
+
+    // Merge the remaining elements in left array
+    while ( i2 <= mid )
+        temp[i1++] = input[i2++];
+
+    // Merge the remaining elements in right array
+    while ( i3 <= r )
+        temp[i1++] = input[i3++];
+
+    // Move from temp array to master array
+    for ( int i = p; i <= r; i++ )
+        input[i] = temp[i-p];
+}
+
+void merge_sort(int* input, int p, int r)
+{
+    if ( p < r )
+    {
+        int mid = floor((p + r) / 2);
+        merge_sort(input, p, mid);
+        merge_sort(input, mid + 1, r);
+        merge(input, p, r);
+    }
+}
+
+int main()
+{
+    int input[INPUT_SIZE];
+    srand(time(NULL));
+  	for(int i=0; i < INPUT_SIZE; i++)
+	{
+		input[i] = rand()%100;
+	}
+    cout << "Input: ";
+    print(input);
+    merge_sort(input, 0, INPUT_SIZE-1);
+    cout << "Output: ";
+    print(input);
+    return 0;
+}
